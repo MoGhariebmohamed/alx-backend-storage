@@ -1,6 +1,6 @@
 -- script that ranks country of bands,
 -- ordered by the number of (non-unique) fans
-SELECT origin, SUM(fans) as fans_count
+SELECT band_name, COALESCE(split, 2022) - formed AS lifespan
 FROM metal_bands
-GROUP BY origin
-ORDER BY fans_count DESC;
+WHERE style LIKE '%Glam rock%'
+ORDER BY lifespan DESC;
