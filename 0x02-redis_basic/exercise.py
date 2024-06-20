@@ -12,6 +12,23 @@ from functools import wraps
 all_types = Union[str, bytes, int, float]
 
 
+def count_calls(method: Callable) -> Callable:
+    """
+    the metod to call class
+    """
+    key = method.__qualname__
+
+    @wraps(method)
+    def wrapper(self, *args, **kwds):
+        """
+        to wrap the class
+        """
+        self.redis.incr(key)
+        return method(self, *args, **kwds)
+
+    return wrapper
+
+
 class Cache:
     """
     for the redis cash db
@@ -24,6 +41,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: all_types) -> str:
         """
         get random key generated uuid stored in redis db
