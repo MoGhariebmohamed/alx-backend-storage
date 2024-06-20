@@ -25,12 +25,32 @@ class Cache:
         self._redis.flushdb()
 
     def store(self, data: all_types) -> str:
-       """
-       get random key generated uuid stored in redis db
-       data: all data types
-       """
+        """
+        get random key generated uuid stored in redis db
+        data: all data types
+        """
+        key = str(uuid4())
+        self._redis.mset({key: data})
+        return key
 
-       key = str(uuid4())
-       self._redis.mset({key: data})
-       return key
+    def get(self, key: str, fn: Optional[Callable] = None) -> all_types:
+        """
+        convert data types to required format
+        key: the key value
+        fn: optional callabe argument
+        """
+        if fn:
+            return fn(self._redis.get(key))
+        return self._redis.get(key)
 
+    def get_str(self: bytes) -> str:
+        """
+        get the string
+        """
+        return self.decode("utf-8")
+
+    def get_int(self: bytes) -> int:
+        """
+        get the integer
+        """
+        return int.from_bytes(self, sys.byteorder)
