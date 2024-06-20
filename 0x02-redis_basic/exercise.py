@@ -28,6 +28,26 @@ def count_calls(method: Callable) -> Callable:
 
     return wrapper
 
+def call_history(method: Callable) -> Callable:
+    """
+    add the input to list
+    """
+    key = method.__qualname__
+    input_data = "".join([key, ":inputs"])
+    output_data = "".join([key, ":outputs"])
+
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """
+        to wrap the class
+        """
+        self._redis.rpush(input_data, str(args))
+        result = method(self, *args, **kwargs)
+        self._redis.rpush(output_data, str(result))
+        return result
+
+    return wrapper
+
 
 class Cache:
     """
@@ -42,6 +62,7 @@ class Cache:
         self._redis.flushdb()
 
     @count_calls
+    @call_history
     def store(self, data: all_types) -> str:
         """
         get random key generated uuid stored in redis db
