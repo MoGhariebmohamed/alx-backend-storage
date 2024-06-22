@@ -7,7 +7,7 @@ for insert docs in python
 from pymongo import MongoClient
 
 
-def log_stats()
+def log_stats():
     """
     logs from enginx
     """
@@ -32,4 +32,4 @@ def log_stats()
 
 
 if __name__ == "__main__":
-    og_stats()
+    log_stats()
