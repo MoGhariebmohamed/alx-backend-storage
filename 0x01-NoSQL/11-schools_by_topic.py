@@ -4,7 +4,7 @@ for insert docs in python
 """
 
 
-def update_topics(mongo_collection, name, topics):
+def schools_by_topic(mongo_collection, topic):
     """
     changes all topics of a school document
     """
